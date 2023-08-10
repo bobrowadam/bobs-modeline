@@ -2,41 +2,44 @@
 (defvar-local medium-space (format "%s" (make-string (round (* 0.02 (frame-width))) ?\s)))
 (defvar-local large-space (format "%s" (make-string (round (* 0.2 (frame-width))) ?\s)))
 
+(defface bob-modeline/face-blue
+  '((t (:bold t :foreground "green" :background nil)))
+  "Blue face for mode-line.")
 
-(setq bob-modeline/time-length (mode--line-element-width bob-modeline/time))
-(setq bob-modeline/battery-status-length (mode--line-element-width bob-modeline/battery-status))
+(defun mode--line-element-width (mode-line-element)
+  (length (substring-no-properties (format-mode-line mode-line-element))))
 
-(setq-default mode-line-format
-              '((:eval bob-modeline/buffer-modify-state)
-                medium-space
-                (:eval bob-modeline/buffer-name)
-                small-space
-                (:eval bob-modeline/major-mode)
-                large-space
-                (:eval bob-modeline/project-name)
-                small-space
-                (:eval bob-modeline/vc-mode)
-                (:eval
-                 (propertize
-                  " "
-                  'display
-                  `((space :align-to (- (+ right right-margin)
-                                        ,(+ 1 bob-modeline/time-length))))))
-                small-space
-                (:eval bob-modeline/time)))
 
 (defvar-local bob-modeline/buffer-name
     '(:eval (format "%s  %s "
-                    (propertize ""
-                                'face '(modus-themes-fg-blue-intense bold))
+                    (propertize ""
+                                'face '(bob-modeline/face-blue))
                     (propertize (buffer-name)
                                 'face '(modus-themes-bold)))))
 
 (defvar-local bob-modeline/major-mode
-    '(:eval (format "%s %s "
-                    (propertize "λ"
-                                'face '(modus-themes-fg-blue-intense bold))
-                    (format-mode-line mode-name))))
+    '(:eval (major-mode-to-icon-property)))
+
+(defun major-mode-to-icon-property ()
+  (cond ((eq major-mode 'js2-mode)
+         (propertize " "
+                     'display (create-image "/Users/bob/source/bobs-modeline/assets/js-icon.png"
+                                            'png nil :ascent 'center :scale 0.035)))
+        ((eq major-mode 'typescript-mode)
+         (propertize " "
+                     'display (create-image "/Users/bob/source/bobs-modeline/assets/ts-icon.png"
+                                            'png nil :ascent 'center)))
+        ((eq major-mode 'emacs-lisp-mode)
+         (propertize " "
+                     'display (create-image "/Users/bob/source/bobs-modeline/assets/emacs-icon.png"
+                                            'png nil :ascent 'center :scale 0.02)))
+        (t (propertize " "
+                       'face '(bob-modeline/face-blue bold)))))
+
+(defun bobs-modeline--propertize-png (path &optional scale)
+  `(propertize " "
+               'display (create-image ,path
+                                      'png nil :ascent 'center)))
 
 (defvar-local bob-modeline/buffer-modify-state
     '(:eval (if (buffer-modified-p)
@@ -48,17 +51,28 @@
 (defvar-local bob-modeline/vc-mode
     '(:eval (when vc-mode
               (format "%s %s"
-                      (propertize ""
-                                  'face '(modus-themes-fg-blue-intense bold))   
-                      (propertize (substring vc-mode 1))))))
+                      (propertize (vc-state-symbol)
+                                  'face '(bob-modeline/face-blue))
+                      (propertize (substring vc-mode 1)))
+              "")))
+
+;; TODO:
+;; vc-mode should change icon according to (vc-state (buffer-file-name))
+
+(defun vc-state-symbol ()
+  (cond ((equal (vc-state (buffer-file-name)) 'up-to-date)
+         (propertize ""
+                     'face '(modus-themes-fg-blue-intense bold)))
+        (t (propertize ""
+                       'face '(modus-themes-fg-blue-intense bold)))))
 
 (defvar-local bob-modeline/project-name
     '(:eval (when (project-current)
-             (format "%s %s"
-                     (propertize ""
-                                 'face '(modus-themes-fg-blue-intense bold))
-                     (propertize (capitalize (project-name (project-current)))
-                                 'face '(modus-themes-bold))))))
+              (format "%s %s"
+                      (propertize ""
+                                  'face '(bob-modeline/face-blue))
+                      (propertize (capitalize (project-name (project-current)))
+                                  'face '(modus-themes-bold))))))
 
 (defvar-local bob-modeline/battery-status
     '(:eval (format "%s  %s%s"
@@ -68,16 +82,37 @@
                                 'face '(modus-themes-bold))
                     (propertize "%%"
                                 'face '(modus-themes-bold)))))
+(setq bob-modeline/battery-status-length (mode--line-element-width bob-modeline/battery-status))
 
 (defvar-local bob-modeline/time
     '(:eval (format "%s"
                     (propertize (format-time-string "%R" (current-time))
-                                'face '(modus-themes-fg-green-cooler)))))
+                                'face '(:foreground "green")))))
 
-(defun mode--line-element-width (mode-line-element)
-  (length (substring-no-properties (format-mode-line mode-line-element))))
+(setq bob-modeline/time-length (mode--line-element-width bob-modeline/time))
+(setq-default mode-line-format
+              '(" "
+                (:eval bob-modeline/buffer-modify-state)
+                medium-space
+                (:eval bob-modeline/major-mode)
+                small-space
+                (:eval bob-modeline/buffer-name)
+                small-space
+                (:eval bob-modeline/project-name)
+                small-space
+                (:eval bob-modeline/vc-mode)
+                small-space
+                (:eval
+                 (propertize
+                  " "
+                  'display
+                  `((space :align-to (- (+ right right-margin)
+                                        ,(+ 1 bob-modeline/time-length))))))
+                small-space
+                (:eval bob-modeline/time)))
+
+(set-face-background 'mode-line nil)
+(set-face-foreground 'mode-line nil)
+(set-face-attribute 'mode-line nil :box nil)
 
 (provide 'bobs-modeline)
-
-
-
