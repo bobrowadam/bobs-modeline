@@ -26,10 +26,12 @@
                                         0.035))
         ((eq major-mode 'typescript-mode)
          (bobs-modeline--propertize-png "ts-icon"))
-        ((eq major-mode 'emacs-lisp-mode)
+        ((derived-mode-p 'emacs-lisp-mode)
          (bobs-modeline--propertize-png "emacs-icon"
                                         0.02))
-        (t (propertize " "
+        ((derived-mode-p 'magit-mode)
+         (bobs-modeline--propertize-png "magit-icon" 0.08))
+        (t (propertize "ℵ "
                        'face '(bob-modeline/face-blue bold)))))
 
 (defun bobs-modeline--propertize-png (file-name-minus-suffix &optional scale)
@@ -59,7 +61,7 @@
   (cond ((equal (vc-state (buffer-file-name)) 'up-to-date)
          (propertize ""
                      'face '(modus-themes-fg-blue-intense bold)))
-        (t (propertize ""
+        (t (propertize ""
                        'face '(modus-themes-fg-blue-intense bold)))))
 
 (defvar-local bob-modeline/project-name
