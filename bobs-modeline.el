@@ -22,24 +22,20 @@
 
 (defun major-mode-to-icon-property ()
   (cond ((eq major-mode 'js2-mode)
-         (propertize " "
-                     'display (create-image "/Users/bob/source/bobs-modeline/assets/js-icon.png"
-                                            'png nil :ascent 'center :scale 0.035)))
+         (bobs-modeline--propertize-png "js-icon"
+                                        0.035))
         ((eq major-mode 'typescript-mode)
-         (propertize " "
-                     'display (create-image "/Users/bob/source/bobs-modeline/assets/ts-icon.png"
-                                            'png nil :ascent 'center)))
+         (bobs-modeline--propertize-png "ts-icon"))
         ((eq major-mode 'emacs-lisp-mode)
-         (propertize " "
-                     'display (create-image "/Users/bob/source/bobs-modeline/assets/emacs-icon.png"
-                                            'png nil :ascent 'center :scale 0.02)))
+         (bobs-modeline--propertize-png "emacs-icon"
+                                        0.02))
         (t (propertize " "
                        'face '(bob-modeline/face-blue bold)))))
 
-(defun bobs-modeline--propertize-png (path &optional scale)
-  `(propertize " "
-               'display (create-image ,path
-                                      'png nil :ascent 'center)))
+(defun bobs-modeline--propertize-png (file-name-minus-suffix &optional scale)
+  (propertize " "
+              'display (create-image (format "/Users/bob/source/bobs-modeline/assets/%s.png" file-name-minus-suffix)
+                                     'png nil :ascent 'center :scale (or scale 1.0))))
 
 (defvar-local bob-modeline/buffer-modify-state
     '(:eval (if (buffer-modified-p)
