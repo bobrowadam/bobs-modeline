@@ -46,13 +46,18 @@
               (propertize ""
                           'face '(modus-themes-fg-green-faint bold)))))
 
+(defun should-calc-vc-mode ()
+  (and (not (and (buffer-file-name)
+                   (file-remote-p (buffer-file-name))))
+             vc-mode))
+
 (defvar-local bob-modeline/vc-mode
-    '(:eval (when vc-mode
+    '(:eval (when (should-calc-vc-mode)
               (format "%s %s"
                       (propertize (vc-state-symbol)
                                   'face '(bob-modeline/face-blue))
-                      (propertize (substring vc-mode 1)))
-              "")))
+                      (propertize (substring vc-mode 1))))))
+
 
 ;; TODO:
 ;; vc-mode should change icon according to (vc-state (buffer-file-name))
@@ -64,13 +69,18 @@
         (t (propertize ""
                        'face '(modus-themes-fg-blue-intense bold)))))
 
+(defun should-calc-project-name ()
+  (and (buffer-file-name)
+       (not (file-remote-p (buffer-file-name)))))
+
 (defvar-local bob-modeline/project-name
-    '(:eval (when (project-current)
-              (format "%s %s"
-                      (propertize ""
-                                  'face '(bob-modeline/face-blue))
-                      (propertize (capitalize (project-name (project-current)))
-                                  'face '(modus-themes-bold))))))
+    '(:eval (when (and (should-calc-project-name)
+                       (project-current))
+                  (format "%s %s"
+                          (propertize ""
+                                      'face '(bob-modeline/face-blue))
+                          (propertize (capitalize (project-name (project-current)))
+                                      'face '(modus-themes-bold))))))
 
 (defvar-local bob-modeline/battery-status
     '(:eval (format "%s  %s%s"
