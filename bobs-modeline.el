@@ -66,9 +66,9 @@
                       (vc-state-symbol)
                       (propertize (substring vc-mode 1))))))
 
-
 ;; TODO:
 ;; vc-mode should change icon according to (vc-state (buffer-file-name))
+
 
 (defun vc-state-symbol ()
   (cond ((equal (vc-state (buffer-file-name)) 'up-to-date)
