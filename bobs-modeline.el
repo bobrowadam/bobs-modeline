@@ -2,9 +2,18 @@
 (defvar-local medium-space (format "%s" (make-string (round (* 0.02 (frame-width))) ?\s)))
 (defvar-local large-space (format "%s" (make-string (round (* 0.2 (frame-width))) ?\s)))
 
+
 (defface bob-modeline/face-blue
-  '((t (:bold t :foreground "green" :background nil)))
+  '((t (:bold t :foreground "blue" :background nil)))
   "Blue face for mode-line.")
+
+(defface bob-modeline/face-green
+  '((t (:bold t :foreground "green" :background nil)))
+  "Green face for mode-line.")
+
+(defface bob-modeline/face-yellow
+  '((t (:bold t :foreground "yellow" :background nil)))
+  "Yellow face for mode-line.")
 
 (defun mode--line-element-width (mode-line-element)
   (length (substring-no-properties (format-mode-line mode-line-element))))
@@ -13,7 +22,7 @@
 (defvar-local bob-modeline/buffer-name
     '(:eval (format "%s  %s "
                     (propertize ""
-                                'face '(bob-modeline/face-blue))
+                                'face '(bob-modeline/face-green))
                     (propertize (buffer-name)
                                 'face '(modus-themes-bold)))))
 
@@ -32,7 +41,7 @@
         ((derived-mode-p 'magit-mode)
          (bobs-modeline--propertize-png "magit-icon" 0.08))
         (t (propertize "ℵ "
-                       'face '(bob-modeline/face-blue bold)))))
+                       'face '(bob-modeline/face-green bold)))))
 
 (defun bobs-modeline--propertize-png (file-name-minus-suffix &optional scale)
   (propertize " "
@@ -54,8 +63,7 @@
 (defvar-local bob-modeline/vc-mode
     '(:eval (when (should-calc-vc-mode)
               (format "%s %s"
-                      (propertize (vc-state-symbol)
-                                  'face '(bob-modeline/face-blue))
+                      (vc-state-symbol)
                       (propertize (substring vc-mode 1))))))
 
 
@@ -65,9 +73,12 @@
 (defun vc-state-symbol ()
   (cond ((equal (vc-state (buffer-file-name)) 'up-to-date)
          (propertize ""
-                     'face '(modus-themes-fg-blue-intense bold)))
+                     'face '(bob-modeline/face-green bold)))
+         ((equal (vc-state (buffer-file-name)) 'edited)
+         (propertize ""
+                     'face '(bob-modeline/face-yellow bold)))
         (t (propertize ""
-                       'face '(modus-themes-fg-blue-intense bold)))))
+                       'face '(bob-modeline/face-green bold)))))
 
 (defun should-calc-project-name ()
   (and (buffer-file-name)
@@ -78,7 +89,7 @@
                        (project-current))
                   (format "%s %s"
                           (propertize ""
-                                      'face '(bob-modeline/face-blue))
+                                      'face '(bob-modeline/face-green))
                           (propertize (capitalize (project-name (project-current)))
                                       'face '(modus-themes-bold))))))
 
