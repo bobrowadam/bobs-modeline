@@ -15,6 +15,10 @@
   '((t (:bold t :foreground "yellow" :background nil)))
   "Yellow face for mode-line.")
 
+(defface bob-modeline/face-orange
+  '((t (:bold t :foreground "orange" :background nil)))
+  "Orange face for mode-line.")
+
 (defun mode--line-element-width (mode-line-element)
   (length (substring-no-properties (format-mode-line mode-line-element))))
 
@@ -40,6 +44,8 @@
                                         0.02))
         ((derived-mode-p 'magit-mode)
          (bobs-modeline--propertize-png "magit-icon" 0.08))
+        ((derived-mode-p 'dired-mode)
+         (bobs-modeline--propertize-png "dired-icon" 0.08))
         (t (propertize "ℵ "
                        'face '(bob-modeline/face-green bold)))))
 
@@ -69,7 +75,6 @@
 ;; TODO:
 ;; vc-mode should change icon according to (vc-state (buffer-file-name))
 
-
 (defun vc-state-symbol ()
   (cond ((equal (vc-state (buffer-file-name)) 'up-to-date)
          (propertize ""
@@ -77,9 +82,11 @@
          ((equal (vc-state (buffer-file-name)) 'edited)
          (propertize ""
                      'face '(bob-modeline/face-yellow bold)))
+         ((equal (vc-state (buffer-file-name)) 'added)
+         (propertize ""
+                     'face '(bob-modeline/face-orange bold)))
         (t (propertize ""
                        'face '(bob-modeline/face-green bold)))))
-
 (defun should-calc-project-name ()
   (and (buffer-file-name)
        (not (file-remote-p (buffer-file-name)))))
@@ -87,11 +94,11 @@
 (defvar-local bob-modeline/project-name
     '(:eval (when (and (should-calc-project-name)
                        (project-current))
-                  (format "%s %s"
-                          (propertize ""
-                                      'face '(bob-modeline/face-green))
-                          (propertize (capitalize (project-name (project-current)))
-                                      'face '(modus-themes-bold))))))
+              (format "%s %s"
+                      (propertize ""
+                                  'face '(bob-modeline/face-green))
+                      (propertize (capitalize (project-name (project-current)))
+                                  'face '(modus-themes-bold))))))
 
 (defvar-local bob-modeline/battery-status
     '(:eval (format "%s  %s%s"
