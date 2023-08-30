@@ -46,6 +46,8 @@
          (bobs-modeline--propertize-png "magit-icon" 0.08))
         ((derived-mode-p 'dired-mode)
          (bobs-modeline--propertize-png "dired-icon" 0.08))
+        ((derived-mode-p 'web-mode)
+         (bobs-modeline--propertize-png "vue-icon" 0.7))
         (t (propertize "ℵ "
                        'face '(bob-modeline/face-green bold)))))
 
