@@ -48,6 +48,8 @@
          (bobs-modeline--propertize-png "dired-icon" 0.08))
         ((derived-mode-p 'web-mode)
          (bobs-modeline--propertize-png "vue-icon" 0.7))
+        ((derived-mode-p 'rust-mode)
+         (bobs-modeline--propertize-png "rust-icon" 0.08))
         (t (propertize "ℵ "
                        'face '(bob-modeline/face-green bold)))))
 
@@ -65,8 +67,8 @@
 
 (defun should-calc-vc-mode ()
   (and (not (and (buffer-file-name)
-                   (file-remote-p (buffer-file-name))))
-             vc-mode))
+                 (file-remote-p (buffer-file-name))))
+       vc-mode))
 
 (defvar-local bob-modeline/vc-mode
     '(:eval (when (should-calc-vc-mode)
@@ -81,14 +83,15 @@
   (cond ((equal (vc-state (buffer-file-name)) 'up-to-date)
          (propertize ""
                      'face '(bob-modeline/face-green bold)))
-         ((equal (vc-state (buffer-file-name)) 'edited)
+        ((equal (vc-state (buffer-file-name)) 'edited)
          (propertize ""
                      'face '(bob-modeline/face-yellow bold)))
-         ((equal (vc-state (buffer-file-name)) 'added)
+        ((equal (vc-state (buffer-file-name)) 'added)
          (propertize ""
                      'face '(bob-modeline/face-orange bold)))
         (t (propertize ""
                        'face '(bob-modeline/face-green bold)))))
+
 (defun should-calc-project-name ()
   (and (buffer-file-name)
        (not (file-remote-p (buffer-file-name)))))
@@ -139,8 +142,10 @@
                 small-space
                 (:eval bob-modeline/time)))
 
-(set-face-background 'mode-line nil)
-(set-face-foreground 'mode-line nil)
-(set-face-attribute 'mode-line nil :box nil)
+(let ((subtle (face-foreground 'shadow)))
+    (custom-set-faces
+     `(mode-line ((t :background unspecified :box unspecified)))
+     `(mode-line-active ((t :inherit mode-line :box unspecified :overline ,subtle)))
+     `(mode-line-inactive ((t :background unspecified :foreground ,subtle :box unspecified)))))
 
 (provide 'bobs-modeline)
