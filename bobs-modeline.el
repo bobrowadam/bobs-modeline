@@ -24,11 +24,12 @@
 
 
 (defvar-local bob-modeline/buffer-name
-    '(:eval (format "%s  %s "
-                    (propertize ""
-                                'face '(bob-modeline/face-green))
+    '(:eval (format "%s: %s"
+                    (propertize "Buffer:"
+                                  'face '(bob-modeline/face-green))
                     (propertize (buffer-name)
-                                'face '(modus-themes-bold)))))
+                                'face '(modus-themes-bold)
+                                'help-echo "Buffer Name"))))
 
 (defvar-local bob-modeline/major-mode
     '(:eval (major-mode-to-icon-property)))
@@ -41,7 +42,7 @@
          (bobs-modeline--propertize-png "ts-icon"))
         ((derived-mode-p 'emacs-lisp-mode)
          (bobs-modeline--propertize-png "emacs-icon"
-                                        0.02))
+                                        0.025))
         ((derived-mode-p 'magit-mode)
          (bobs-modeline--propertize-png "magit-icon" 0.08))
         ((derived-mode-p 'dired-mode)
@@ -56,14 +57,17 @@
 (defun bobs-modeline--propertize-png (file-name-minus-suffix &optional scale)
   (propertize " "
               'display (create-image (format "/Users/bob/source/bobs-modeline/assets/%s.png" file-name-minus-suffix)
-                                     'png nil :ascent 'center :scale (or scale 1.0))))
+                                     'png nil :ascent 'center :scale (or scale 1.0))
+              'help-echo "Major Mode"))
 
 (defvar-local bob-modeline/buffer-modify-state
     '(:eval (if (buffer-modified-p)
                 (propertize ""
-                            'face '(modus-themes-fg-green-faint bold))
+                            'face '(modus-themes-fg-green-faint bold)
+                            'help-echo "Buffer modified.")
               (propertize ""
-                          'face '(modus-themes-fg-green-faint bold)))))
+                          'face '(modus-themes-fg-green-faint bold)
+                          'help-echo "Buffer not modified."))))
 
 (defun should-calc-vc-mode ()
   (and (not (and (buffer-file-name)
@@ -82,15 +86,19 @@
 (defun vc-state-symbol ()
   (cond ((equal (vc-state (buffer-file-name)) 'up-to-date)
          (propertize ""
-                     'face '(bob-modeline/face-green bold)))
+                     'face '(bob-modeline/face-green bold)
+                     'help-echo "VC State: Up to date"))
         ((equal (vc-state (buffer-file-name)) 'edited)
          (propertize ""
-                     'face '(bob-modeline/face-yellow bold)))
+                     'face '(bob-modeline/face-yellow bold)
+                     'help-echo "VC State: Edited"))
         ((equal (vc-state (buffer-file-name)) 'added)
          (propertize ""
-                     'face '(bob-modeline/face-orange bold)))
+                     'face '(bob-modeline/face-orange bold)
+                     'help-echo "VC State: Added"))
         (t (propertize ""
-                       'face '(bob-modeline/face-green bold)))))
+                       'face '(bob-modeline/face-green bold)
+                       'help-echo "VC State"))))
 
 (defun should-calc-project-name ()
   (and (buffer-file-name)
@@ -100,10 +108,11 @@
     '(:eval (when (and (should-calc-project-name)
                        (project-current))
               (format "%s %s"
-                      (propertize ""
+                      (propertize "Project:"
                                   'face '(bob-modeline/face-green))
                       (propertize (capitalize (project-name (project-current)))
-                                  'face '(modus-themes-bold))))))
+                                  'face '(modus-themes-bold)
+                                  'help-echo "Project Name")))))
 
 (defvar-local bob-modeline/battery-status
     '(:eval (format "%s  %s%s"
@@ -128,9 +137,9 @@
                 (:eval bob-modeline/major-mode)
                 small-space
                 (:eval bob-modeline/buffer-name)
-                small-space
+                medium-space
                 (:eval bob-modeline/project-name)
-                small-space
+                medium-space
                 (:eval bob-modeline/vc-mode)
                 small-space
                 (:eval
