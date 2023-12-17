@@ -58,7 +58,7 @@
   (propertize " "
               'display (create-image (format "/Users/bob/source/bobs-modeline/assets/%s.png" file-name-minus-suffix)
                                      'png nil :ascent 'center :scale (or scale 1.0))
-              'help-echo "Major Mode"))
+              'help-echo (symbol-name major-mode)))
 
 (defvar-local bob-modeline/buffer-modify-state
     '(:eval (if (buffer-modified-p)
@@ -80,9 +80,6 @@
                       (vc-state-symbol)
                       (propertize (substring vc-mode 1))))))
 
-;; TODO:
-;; vc-mode should change icon according to (vc-state (buffer-file-name))
-
 (defun vc-state-symbol ()
   (cond ((equal (vc-state (buffer-file-name)) 'up-to-date)
          (propertize ""
@@ -101,8 +98,10 @@
                        'help-echo "VC State"))))
 
 (defun should-calc-project-name ()
-  (and (buffer-file-name)
-       (not (file-remote-p (buffer-file-name)))))
+  (or (and (derived-mode-p 'dired-mode)
+           (not (file-remote-p (dired-current-directory))))
+      (and (buffer-file-name)
+           (not (file-remote-p (buffer-file-name))))))
 
 (defvar-local bob-modeline/project-name
     '(:eval (when (and (should-calc-project-name)
