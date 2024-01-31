@@ -4,19 +4,19 @@
 
 
 (defface bob-modeline/face-blue
-  '((t (:bold t :foreground "blue" :background nil)))
+  '((t (:bold t :foreground "blue" :background unspecified)))
   "Blue face for mode-line.")
 
 (defface bob-modeline/face-green
-  '((t (:bold t :foreground "green" :background nil)))
+  '((t (:bold t :foreground "green" :background unspecified)))
   "Green face for mode-line.")
 
 (defface bob-modeline/face-yellow
-  '((t (:bold t :foreground "yellow" :background nil)))
+  '((t (:bold t :foreground "yellow" :background unspecified)))
   "Yellow face for mode-line.")
 
 (defface bob-modeline/face-orange
-  '((t (:bold t :foreground "orange" :background nil)))
+  '((t (:bold t :foreground "orange" :background unspecified)))
   "Orange face for mode-line.")
 
 (defun mode--line-element-width (mode-line-element)
@@ -24,7 +24,7 @@
 
 
 (defvar-local bob-modeline/buffer-name
-    '(:eval (format "%s: %s"
+    '(:eval (format "%s %s"
                     (propertize "Buffer:"
                                   'face '(bob-modeline/face-green))
                     (propertize (buffer-name)
@@ -129,7 +129,11 @@
                                 'face '(:foreground "green")))))
 
 (setq bob-modeline/time-length (mode--line-element-width bob-modeline/time))
-(setq-default mode-line-format
+
+(defun bobs-modeline/enable ()
+  (interactive)
+  (progn
+    (setq-default mode-line-format
               '(" "
                 (:eval bob-modeline/buffer-modify-state)
                 medium-space
@@ -149,11 +153,10 @@
                                         ,(+ 1 bob-modeline/time-length))))))
                 small-space
                 (:eval bob-modeline/time)))
-
-(let ((subtle (face-foreground 'shadow)))
+    (let ((subtle (face-foreground 'shadow)))
     (custom-set-faces
      `(mode-line ((t :background unspecified :box unspecified)))
      `(mode-line-active ((t :inherit mode-line :box unspecified :overline ,subtle)))
-     `(mode-line-inactive ((t :background unspecified :foreground ,subtle :box unspecified)))))
+     `(mode-line-inactive ((t :background unspecified :foreground ,subtle :box unspecified)))))))
 
 (provide 'bobs-modeline)
