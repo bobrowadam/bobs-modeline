@@ -134,7 +134,7 @@
   (interactive)
   (progn
     (setq-default mode-line-format
-              '(" "
+              '(" %l "
                 (:eval bob-modeline/buffer-modify-state)
                 medium-space
                 (:eval bob-modeline/major-mode)
@@ -153,10 +153,12 @@
                                         ,(+ 1 bob-modeline/time-length))))))
                 small-space
                 (:eval bob-modeline/time)))
-    (let ((subtle (face-foreground 'shadow)))
-    (custom-set-faces
-     `(mode-line ((t :background unspecified :box unspecified)))
-     `(mode-line-active ((t :inherit mode-line :box unspecified :overline ,subtle)))
-     `(mode-line-inactive ((t :background unspecified :foreground ,subtle :box unspecified)))))))
+    ;; (let ((subtle (face-foreground 'shadow)))
+    ;;   (custom-set-faces
+    ;;    `(mode-line ((t :background unspecified :box t)))
+    ;;    `(mode-line-active ((t :inherit mode-line :box unspecified :overline ,subtle)))
+    ;;    `(mode-line-inactive ((t :background unspecified :foreground ,subtle :box unspecified))))
+    ;;   )
+))
 
 (provide 'bobs-modeline)
