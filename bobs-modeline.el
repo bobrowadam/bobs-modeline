@@ -24,9 +24,7 @@
 
 
 (defvar-local bob-modeline/buffer-name
-    '(:eval (format "%s %s"
-                    (propertize "Buffer:"
-                                  'face '(bob-modeline/face-green))
+    '(:eval (format "%s"
                     (propertize (buffer-name)
                                 'face '(modus-themes-bold)
                                 'help-echo "Buffer Name"))))
@@ -106,11 +104,9 @@
 (defvar-local bob-modeline/project-name
     '(:eval (when (and (should-calc-project-name)
                        (project-current))
-              (format "%s %s"
-                      (propertize "Project:"
-                                  'face '(bob-modeline/face-green))
+              (format "%s"
                       (propertize (capitalize (project-name (project-current)))
-                                  'face '(modus-themes-bold)
+                                  'face 'mode-line-emphasis
                                   'help-echo "Project Name")))))
 
 (defvar-local bob-modeline/battery-status
@@ -126,7 +122,7 @@
 (defvar-local bob-modeline/time
     '(:eval (format "%s"
                     (propertize (format-time-string "%R" (current-time))
-                                'face '(:foreground "green")))))
+                                'face 'mode-line-emphasis))))
 
 (setq bob-modeline/time-length (mode--line-element-width bob-modeline/time))
 
