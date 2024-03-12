@@ -117,6 +117,7 @@
                                 'face '(modus-themes-bold))
                     (propertize "%%"
                                 'face '(modus-themes-bold)))))
+
 (setq bob-modeline/battery-status-length (mode--line-element-width bob-modeline/battery-status))
 
 (defvar-local bob-modeline/time
@@ -124,7 +125,7 @@
                     (propertize (format-time-string "%R" (current-time))
                                 'face 'mode-line-emphasis))))
 
-(setq bob-modeline/time-length (mode--line-element-width bob-modeline/time))
+(defvar bob-modeline/time-length (mode--line-element-width bob-modeline/time))
 
 (defun bobs-modeline/enable ()
   (interactive)
@@ -146,7 +147,9 @@
                   " "
                   'display
                   `((space :align-to (- (+ right right-margin)
-                                        ,(+ 1 bob-modeline/time-length))))))
+                                        ,(+ 4 bob-modeline/battery-status-length bob-modeline/time-length))))))
+                small-space
+                (:eval bob-modeline/battery-status)
                 small-space
                 (:eval bob-modeline/time)))
     ;; (let ((subtle (face-foreground 'shadow)))
