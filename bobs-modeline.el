@@ -54,7 +54,7 @@
 
 (defun bobs-modeline--propertize-png (file-name-minus-suffix &optional scale)
   (propertize " "
-              'display (create-image (format "/Users/bob/source/bobs-modeline/assets/%s.png" file-name-minus-suffix)
+              'display (create-image (format "~/source/bobs-modeline/assets/%s.png" file-name-minus-suffix)
                                      'png nil :ascent 'center :scale (or scale 1.0))
               'help-echo (symbol-name major-mode)))
 
