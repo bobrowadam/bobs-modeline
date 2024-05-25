@@ -37,7 +37,7 @@
          (bobs-modeline--propertize-png "js-icon"
                                         0.035))
         ((eq major-mode 'typescript-mode)
-         (bobs-modeline--propertize-png "ts-icon"))
+         (bobs-modeline--propertize-png "ts-icon" 1.3))
         ((derived-mode-p 'emacs-lisp-mode)
          (bobs-modeline--propertize-png "emacs-icon"
                                         0.025))
