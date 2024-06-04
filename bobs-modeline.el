@@ -49,8 +49,10 @@
          (bobs-modeline--propertize-png "vue-icon" 0.7))
         ((derived-mode-p 'rust-mode)
          (bobs-modeline--propertize-png "rust-icon" 0.08))
-        (t (propertize "ℵ "
-                       'face '(bob-modeline/face-green bold)))))
+        (t
+         (propertize "%m"
+                     'face '(modus-themes-fg-green-faint bold)
+                     'help-echo (symbol-name major-mode)))))
 
 (defun bobs-modeline--propertize-png (file-name-minus-suffix &optional scale)
   (propertize " "
@@ -131,33 +133,26 @@
   (interactive)
   (progn
     (setq-default mode-line-format
-              '(" %l "
-                (:eval bob-modeline/buffer-modify-state)
-                medium-space
-                (:eval bob-modeline/major-mode)
-                small-space
-                (:eval bob-modeline/buffer-name)
-                medium-space
-                (:eval bob-modeline/project-name)
-                medium-space
-                (:eval bob-modeline/vc-mode)
-                small-space
-                (:eval
-                 (propertize
-                  " "
-                  'display
-                  `((space :align-to (- (+ right right-margin)
-                                        ,(+ 4 bob-modeline/battery-status-length bob-modeline/time-length))))))
-                small-space
-                (:eval bob-modeline/battery-status)
-                small-space
-                (:eval bob-modeline/time)))
-    ;; (let ((subtle (face-foreground 'shadow)))
-    ;;   (custom-set-faces
-    ;;    `(mode-line ((t :background unspecified :box t)))
-    ;;    `(mode-line-active ((t :inherit mode-line :box unspecified :overline ,subtle)))
-    ;;    `(mode-line-inactive ((t :background unspecified :foreground ,subtle :box unspecified))))
-    ;;   )
-))
+                  '(" %l "
+                    (:eval bob-modeline/buffer-modify-state)
+                    medium-space
+                    (:eval (or bob-modeline/major-mode " %m "))
+                    small-space
+                    (:eval bob-modeline/buffer-name)
+                    medium-space
+                    (:eval bob-modeline/project-name)
+                    medium-space
+                    (:eval bob-modeline/vc-mode)
+                    small-space
+                    (:eval
+                     (propertize
+                      " "
+                      'display
+                      `((space :align-to (- (+ right right-margin)
+                                            ,(+ 4 bob-modeline/battery-status-length bob-modeline/time-length))))))
+                    small-space
+                    (:eval bob-modeline/battery-status)
+                    small-space
+                    (:eval bob-modeline/time)))))
 
 (provide 'bobs-modeline)
