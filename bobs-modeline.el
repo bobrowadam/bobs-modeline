@@ -133,7 +133,7 @@
   (interactive)
   (progn
     (setq-default mode-line-format
-                  '(" %l "
+                  '("%l:%C "
                     (:eval bob-modeline/buffer-modify-state)
                     medium-space
                     (:eval (or bob-modeline/major-mode " %m "))
